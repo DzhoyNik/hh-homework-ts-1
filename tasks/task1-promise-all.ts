@@ -7,30 +7,30 @@
 - Немедленно реджектится при первой ошибке
 */
 
-function promiseAll(promises) {
-  return new Promise(( resolve, reject ) => {
+function promiseAll<T>( promises: Array<Promise<T> | T> ): Promise<T[]> {
+  return new Promise<T[]>(( resolve, reject ) => {
     if (!Array.isArray(promises)) {
-      reject(new TypeError("Аргумент должен быть массивом"))
-      return
+      return reject(new TypeError("Аргумент должен быть массивом"))
     }
 
     if (promises.length === 0) {
-      reject([])
-      return
+      return resolve([])
     }
 
-    const results = new Array(promises.length)
+    const results: T[] = new Array(promises.length)
     let completedCount = 0
 
     promises.forEach(( promise, index ) => {
       Promise.resolve(promise)
-        .then(( value ) => {
+        .then(( value: T ) => {
           results[index] = value
           completedCount++
 
-          if (completedCount === promise.length) return resolve(results)
+          if (completedCount === promises.length) {
+            resolve(results)
+          }
         })
-        .catch(reject)
+        .catch( (err) => reject(err) )
     })
   })
 }

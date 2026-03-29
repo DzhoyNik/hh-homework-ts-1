@@ -6,8 +6,8 @@
 - Промис резолвится через ms миллисекунд
 */
 
-function delay(ms) {
-  return new Promise(( resolve ) => {
+function delay(ms: number): Promise<void> {
+  return new Promise<void>(( resolve ) => {
     setTimeout(resolve, ms)
   })
 }
