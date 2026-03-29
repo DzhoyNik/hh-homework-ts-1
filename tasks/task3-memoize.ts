@@ -6,24 +6,28 @@
 - Кэшируйте результат по аргументам
 */
 
-function memoize(fn) {
-  const cache = new Map()
+type Args = string | number
+
+function memoize<TArgs extends Args[], TResult>
+  ( fn: (...args: TArgs) => TResult ): (...args: TArgs) => TResult {
+  const cache = new Map<string, TResult>()
 
   return ( ...args ) => {
     const key = JSON.stringify(args)
+    const cached = cache.get(key)
 
-    if (cache.has(key)) {
-      return cache.get(key)
+    if (cached !== undefined) {
+      return cached
     }
 
-    const result = fn.apply(this, args)
-    cache.set(key, result)
+    const result = fn( ...args )
+    cache.set( key, result )
 
     return result
   }
 }
 
-const slowAdd = (a, b) => {
+const slowAdd = (a: number, b: number): number => {
   return a + b;
 };
 
